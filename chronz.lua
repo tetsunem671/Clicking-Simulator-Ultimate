@@ -135,6 +135,8 @@ local loops = {
 }
 
 -- BUTTON 1: AUTO HATCH
+local MAX_DISTANCE = 25
+
 btn1.MouseButton1Click:Connect(function()
     loops.pos1 = not loops.pos1
     btn1.BackgroundColor3 = loops.pos1 and Color3.fromRGB(0,200,0) or Color3.fromRGB(70,70,70)
@@ -154,25 +156,31 @@ btn1.MouseButton1Click:Connect(function()
                 if egg then
                     local char = player.Character
                     if char then
-                        local pivot = egg:GetPivot()
+                        local charPivot = char:GetPivot()
+                        local eggPivot = egg:GetPivot()
 
-                        -- teleport above/front of egg
-                        local offset = pivot * CFrame.new(0, 5, 5)
-                        char:PivotTo(offset)
+                        local distance = (charPivot.Position - eggPivot.Position).Magnitude
 
-                        -- fire remote
-                        local args = {textbox.Text}
+                        -- ✅ ONLY teleport if too far
+                        if distance > MAX_DISTANCE then
+                            local offset = eggPivot * CFrame.new(0, 5, 5)
+                            char:PivotTo(offset)
 
-                        game:GetService("ReplicatedStorage")
-                            :WaitForChild("Packages")
-                            :WaitForChild("_Index")
-                            :WaitForChild("sleitnick_knit@1.7.0")
-                            :WaitForChild("knit")
-                            :WaitForChild("Services")
-                            :WaitForChild("AutoReconnectService")
-                            :WaitForChild("RE")
-                            :WaitForChild("SetAutoHatchEgg")
-                            :FireServer(unpack(args))
+                            task.wait(0.05)
+                            -- fire remote (always runs)
+                            local args = {textbox.Text}
+    
+                            game:GetService("ReplicatedStorage")
+                                :WaitForChild("Packages")
+                                :WaitForChild("_Index")
+                                :WaitForChild("sleitnick_knit@1.7.0")
+                                :WaitForChild("knit")
+                                :WaitForChild("Services")
+                                :WaitForChild("AutoReconnectService")
+                                :WaitForChild("RE")
+                                :WaitForChild("SetAutoHatchEgg")
+                                :FireServer(unpack(args))
+                        end
                     end
                 end
             end
