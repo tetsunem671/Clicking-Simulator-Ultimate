@@ -72,8 +72,8 @@ end
 
 -- BUTTONS
 local btn1 = createButton("Auto Hatch (1s)", 75)
-local btn2 = createButton("Position 2 (2s)", 110)
-local btn3 = createButton("Position 3 (3s)", 145)
+local btn2 = createButton("Position 2 (1s)", 110)
+local btn3 = createButton("Position 3 (1s)", 145)
 
 -- MINI BUTTON
 local mini = Instance.new("TextButton", gui)
@@ -188,7 +188,7 @@ btn2.MouseButton1Click:Connect(function()
     if loops.pos2 then
         task.spawn(function()
             while loops.pos2 do
-                task.wait(2)
+                task.wait(1)
 
                 local char = player.Character
                 if char and pos2 then
@@ -207,7 +207,7 @@ btn3.MouseButton1Click:Connect(function()
     if loops.pos3 then
         task.spawn(function()
             while loops.pos3 do
-                task.wait(3)
+                task.wait(1)
 
                 local char = player.Character
                 if char and pos3 then
