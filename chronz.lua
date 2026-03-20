@@ -163,8 +163,13 @@ btn1.MouseButton1Click:Connect(function()
 
                         -- ✅ ONLY teleport if too far
                         if distance > MAX_DISTANCE then
-                            local offset = eggPivot * CFrame.new(0, 5, 5)
-                            char:PivotTo(offset)
+                            local targetPos = eggPivot.Position + Vector3.new(0, 3, 0) -- just above egg
+                            
+                            local _, y, _ = char:GetPivot():ToOrientation() -- keep your current rotation
+                            
+                            local safeCF = CFrame.new(targetPos) * CFrame.Angles(0, y, 0)
+                            
+                            char:PivotTo(safeCF)
 
                             task.wait(0.05)
                             -- fire remote (always runs)
