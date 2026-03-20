@@ -3,11 +3,6 @@ local UserInputService = game:GetService("UserInputService")
 
 local player = Players.LocalPlayer
 
--- Your raw pivot
-local pos1 = stringToCFrame("250.79, 651.50, 244.67, 1,0,0, 0,1,0, 0,0,1")
-local pos2 = stringToCFrame("260.00, 651.50, 250.00, 1,0,0, 0,1,0, 0,0,1")
-local pos3 = stringToCFrame("270.00, 651.50, 260.00, 1,0,0, 0,1,0, 0,0,1")
-
 -- SETTINGS
 local CHECK_DELAY = 1
 local MAX_DISTANCE = 25
@@ -23,6 +18,11 @@ local function stringToCFrame(str)
         return CFrame.new(unpack(numbers))
     end
 end
+
+-- Your raw pivot
+local pos1 = stringToCFrame("250.79, 651.50, 244.67, 1,0,0, 0,1,0, 0,0,1")
+local pos2 = stringToCFrame("260.00, 651.50, 250.00, 1,0,0, 0,1,0, 0,0,1")
+local pos3 = stringToCFrame("270.00, 651.50, 260.00, 1,0,0, 0,1,0, 0,0,1")
 
 -- GUI
 local gui = Instance.new("ScreenGui", game.CoreGui)
