@@ -4,7 +4,9 @@ local UserInputService = game:GetService("UserInputService")
 local player = Players.LocalPlayer
 
 -- Your raw pivot
-local savedPosition = "250.791458, 651.509949, 244.670395, 0.999072254, -4.3885704e-09, -0.0430654027, 4.17922585e-09, 1, -4.95111951e-09, 0.0430654027, 4.76654627e-09, 0.999072254"
+local pos1 = stringToCFrame("250.79, 651.50, 244.67, 1,0,0, 0,1,0, 0,0,1")
+local pos2 = stringToCFrame("260.00, 651.50, 250.00, 1,0,0, 0,1,0, 0,0,1")
+local pos3 = stringToCFrame("270.00, 651.50, 260.00, 1,0,0, 0,1,0, 0,0,1")
 
 -- SETTINGS
 local CHECK_DELAY = 1
@@ -21,8 +23,6 @@ local function stringToCFrame(str)
         return CFrame.new(unpack(numbers))
     end
 end
-
-local targetCF = stringToCFrame(savedPosition)
 
 -- GUI
 local gui = Instance.new("ScreenGui", game.CoreGui)
@@ -53,12 +53,19 @@ minimize.Position = UDim2.new(1,-30,0,0)
 minimize.Text = "-"
 minimize.BackgroundColor3 = Color3.fromRGB(80,80,80)
 
--- TOGGLE BUTTON
-local button = Instance.new("TextButton", main)
-button.Size = UDim2.new(1,-20,0,50)
-button.Position = UDim2.new(0,10,0,50)
-button.Text = "OFF"
-button.BackgroundColor3 = Color3.fromRGB(255,0,0)
+local function createButton(text, yPos)
+    local btn = Instance.new("TextButton", main)
+    btn.Size = UDim2.new(1, -20, 0, 30)
+    btn.Position = UDim2.new(0, 10, 0, yPos)
+    btn.Text = text
+    btn.BackgroundColor3 = Color3.fromRGB(70,70,70)
+    btn.TextColor3 = Color3.new(1,1,1)
+    return btn
+end
+
+local btn1 = createButton("Position 1 (1s)", 40)
+local btn2 = createButton("Position 2 (2s)", 75)
+local btn3 = createButton("Position 3 (3s)", 110)
 
 -- MINI BUTTON (when minimized)
 local mini = Instance.new("TextButton", gui)
@@ -115,10 +122,42 @@ makeDraggable(mini, mini)
 -- TOGGLE STATE
 local enabled = false
 
-button.MouseButton1Click:Connect(function()
-    enabled = not enabled
-    button.Text = enabled and "ON" or "OFF"
-    button.BackgroundColor3 = enabled and Color3.fromRGB(0,255,0) or Color3.fromRGB(255,0,0)
+local loops = {
+    pos1 = false,
+    pos2 = false,
+    pos3 = false
+}
+
+local function startLoop(name, cf, delay, button)
+    loops[name] = not loops[name]
+
+    -- update button color
+    button.BackgroundColor3 = loops[name] and Color3.fromRGB(0,200,0) or Color3.fromRGB(70,70,70)
+
+    if loops[name] then
+        task.spawn(function()
+            while loops[name] do
+                task.wait(delay)
+
+                local char = player.Character
+                if char and cf then
+                    char:PivotTo(cf)
+                end
+            end
+        end)
+    end
+end
+
+btn1.MouseButton1Click:Connect(function()
+    startLoop("pos1", pos1, 1, btn1)
+end)
+
+btn2.MouseButton1Click:Connect(function()
+    startLoop("pos2", pos2, 2, btn2)
+end)
+
+btn3.MouseButton1Click:Connect(function()
+    startLoop("pos3", pos3, 3, btn3)
 end)
 
 -- MINIMIZE
@@ -132,21 +171,4 @@ mini.MouseButton1Click:Connect(function()
     mini.Visible = false
 end)
 
--- LOOP
-task.spawn(function()
-    while true do
-        task.wait(CHECK_DELAY)
 
-        if enabled and targetCF then
-            local char = player.Character
-            if char then
-                local currentPos = char:GetPivot().Position
-                local targetPos = targetCF.Position
-
-                if (currentPos - targetPos).Magnitude > MAX_DISTANCE then
-                    char:PivotTo(targetCF)
-                end
-            end
-        end
-    end
-end)
