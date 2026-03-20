@@ -68,28 +68,36 @@ mini.Text = "Open UI"
 mini.Visible = false
 mini.BackgroundColor3 = Color3.fromRGB(50,50,50)
 
--- DRAG FUNCTION
 local function makeDraggable(frame, handle)
+    handle.Active = true -- important for mobile
+
     local dragging = false
-    local dragStart, startPos
+    local dragInput
+    local dragStart
+    local startPos
 
     handle.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        if input.UserInputType == Enum.UserInputType.Touch
+        or input.UserInputType == Enum.UserInputType.MouseButton1 then
+            
             dragging = true
+            dragInput = input
             dragStart = input.Position
             startPos = frame.Position
         end
     end)
 
     handle.InputEnded:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        if input == dragInput then
             dragging = false
+            dragInput = nil
         end
     end)
 
     UserInputService.InputChanged:Connect(function(input)
-        if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+        if dragging and input == dragInput then
             local delta = input.Position - dragStart
+
             frame.Position = UDim2.new(
                 startPos.X.Scale,
                 startPos.X.Offset + delta.X,
