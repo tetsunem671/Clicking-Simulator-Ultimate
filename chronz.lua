@@ -206,7 +206,12 @@ btn2.MouseButton1Click:Connect(function()
 
                 local char = player.Character
                 if char and pos2 then
-                    char:PivotTo(pos2)
+                    local distance = (char:GetPivot().Position - pos2).Magnitude
+
+                    -- ✅ ONLY teleport if too far
+                    if distance > MAX_DISTANCE then
+                        char:PivotTo(pos2)
+                    end
                 end
             end
         end)
@@ -225,7 +230,12 @@ btn3.MouseButton1Click:Connect(function()
 
                 local char = player.Character
                 if char and pos3 then
-                    char:PivotTo(pos3)
+                    local distance = (char:GetPivot().Position - pos3).Magnitude
+
+                    -- ✅ ONLY teleport if too far
+                    if distance > MAX_DISTANCE then
+                        char:PivotTo(pos3)
+                    end
                 end
             end
         end)
