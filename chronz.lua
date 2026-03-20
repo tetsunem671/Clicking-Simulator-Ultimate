@@ -3,10 +3,6 @@ local UserInputService = game:GetService("UserInputService")
 
 local player = Players.LocalPlayer
 
--- SETTINGS
-local CHECK_DELAY = 1
-local MAX_DISTANCE = 25
-
 -- Convert string → CFrame
 local function stringToCFrame(str)
     local numbers = {}
@@ -19,19 +15,20 @@ local function stringToCFrame(str)
     end
 end
 
--- Your raw pivot
-local pos1 = stringToCFrame("250.79, 651.50, 244.67, 1,0,0, 0,1,0, 0,0,1")
+-- Positions
 local pos2 = stringToCFrame("260.00, 651.50, 250.00, 1,0,0, 0,1,0, 0,0,1")
 local pos3 = stringToCFrame("270.00, 651.50, 260.00, 1,0,0, 0,1,0, 0,0,1")
 
 -- GUI
 local gui = Instance.new("ScreenGui", game.CoreGui)
 gui.Name = "TeleportPivotUI"
+gui.ResetOnSpawn = false
+gui.IgnoreGuiInset = true
 
 -- MAIN FRAME
 local main = Instance.new("Frame", gui)
-main.Size = UDim2.new(0, 260, 0, 120)
-main.Position = UDim2.new(0.5, -130, 0.5, -60)
+main.Size = UDim2.new(0, 260, 0, 200)
+main.Position = UDim2.new(0.5, -130, 0.5, -100)
 main.BackgroundColor3 = Color3.fromRGB(40,40,40)
 
 -- TOP BAR
@@ -53,6 +50,16 @@ minimize.Position = UDim2.new(1,-30,0,0)
 minimize.Text = "-"
 minimize.BackgroundColor3 = Color3.fromRGB(80,80,80)
 
+-- TEXTBOX (egg name)
+local textbox = Instance.new("TextBox", main)
+textbox.Size = UDim2.new(1, -20, 0, 30)
+textbox.Position = UDim2.new(0, 10, 0, 40)
+textbox.PlaceholderText = "Enter Egg Name"
+textbox.Text = ""
+textbox.BackgroundColor3 = Color3.fromRGB(60,60,60)
+textbox.TextColor3 = Color3.new(1,1,1)
+
+-- BUTTON CREATOR
 local function createButton(text, yPos)
     local btn = Instance.new("TextButton", main)
     btn.Size = UDim2.new(1, -20, 0, 30)
@@ -63,11 +70,12 @@ local function createButton(text, yPos)
     return btn
 end
 
-local btn1 = createButton("Position 1 (1s)", 40)
-local btn2 = createButton("Position 2 (2s)", 75)
-local btn3 = createButton("Position 3 (3s)", 110)
+-- BUTTONS
+local btn1 = createButton("Auto Hatch (1s)", 75)
+local btn2 = createButton("Position 2 (2s)", 110)
+local btn3 = createButton("Position 3 (3s)", 145)
 
--- MINI BUTTON (when minimized)
+-- MINI BUTTON
 local mini = Instance.new("TextButton", gui)
 mini.Size = UDim2.new(0,100,0,40)
 mini.Position = UDim2.new(0,20,0.5,0)
@@ -75,8 +83,9 @@ mini.Text = "Open UI"
 mini.Visible = false
 mini.BackgroundColor3 = Color3.fromRGB(50,50,50)
 
+-- DRAG SYSTEM (mobile + pc)
 local function makeDraggable(frame, handle)
-    handle.Active = true -- important for mobile
+    handle.Active = true
 
     local dragging = false
     local dragInput
@@ -115,49 +124,98 @@ local function makeDraggable(frame, handle)
     end)
 end
 
--- Apply dragging
 makeDraggable(main, topBar)
 makeDraggable(mini, mini)
 
--- TOGGLE STATE
-local enabled = false
-
+-- LOOP STATES
 local loops = {
     pos1 = false,
     pos2 = false,
     pos3 = false
 }
 
-local function startLoop(name, cf, delay, button)
-    loops[name] = not loops[name]
+-- BUTTON 1: AUTO HATCH
+btn1.MouseButton1Click:Connect(function()
+    loops.pos1 = not loops.pos1
+    btn1.BackgroundColor3 = loops.pos1 and Color3.fromRGB(0,200,0) or Color3.fromRGB(70,70,70)
 
-    -- update button color
-    button.BackgroundColor3 = loops[name] and Color3.fromRGB(0,200,0) or Color3.fromRGB(70,70,70)
-
-    if loops[name] then
+    if loops.pos1 then
         task.spawn(function()
-            while loops[name] do
-                task.wait(delay)
+            while loops.pos1 do
+                task.wait(1)
 
-                local char = player.Character
-                if char and cf then
-                    char:PivotTo(cf)
+                local eggFolder = workspace:FindFirstChild("__Main")
+                if eggFolder then
+                    eggFolder = eggFolder:FindFirstChild("__Eggs")
+                end
+
+                local egg = eggFolder and eggFolder:FindFirstChild(textbox.Text)
+
+                if egg then
+                    local char = player.Character
+                    if char then
+                        local pivot = egg:GetPivot()
+
+                        -- teleport above/front of egg
+                        local offset = pivot * CFrame.new(0, 5, 5)
+                        char:PivotTo(offset)
+
+                        -- fire remote
+                        local args = {textbox.Text}
+
+                        game:GetService("ReplicatedStorage")
+                            :WaitForChild("Packages")
+                            :WaitForChild("_Index")
+                            :WaitForChild("sleitnick_knit@1.7.0")
+                            :WaitForChild("knit")
+                            :WaitForChild("Services")
+                            :WaitForChild("AutoReconnectService")
+                            :WaitForChild("RE")
+                            :WaitForChild("SetAutoHatchEgg")
+                            :FireServer(unpack(args))
+                    end
                 end
             end
         end)
     end
-end
-
-btn1.MouseButton1Click:Connect(function()
-    startLoop("pos1", pos1, 1, btn1)
 end)
 
+-- BUTTON 2 LOOP
 btn2.MouseButton1Click:Connect(function()
-    startLoop("pos2", pos2, 2, btn2)
+    loops.pos2 = not loops.pos2
+    btn2.BackgroundColor3 = loops.pos2 and Color3.fromRGB(0,200,0) or Color3.fromRGB(70,70,70)
+
+    if loops.pos2 then
+        task.spawn(function()
+            while loops.pos2 do
+                task.wait(2)
+
+                local char = player.Character
+                if char and pos2 then
+                    char:PivotTo(pos2)
+                end
+            end
+        end)
+    end
 end)
 
+-- BUTTON 3 LOOP
 btn3.MouseButton1Click:Connect(function()
-    startLoop("pos3", pos3, 3, btn3)
+    loops.pos3 = not loops.pos3
+    btn3.BackgroundColor3 = loops.pos3 and Color3.fromRGB(0,200,0) or Color3.fromRGB(70,70,70)
+
+    if loops.pos3 then
+        task.spawn(function()
+            while loops.pos3 do
+                task.wait(3)
+
+                local char = player.Character
+                if char and pos3 then
+                    char:PivotTo(pos3)
+                end
+            end
+        end)
+    end
 end)
 
 -- MINIMIZE
@@ -170,5 +228,3 @@ mini.MouseButton1Click:Connect(function()
     main.Visible = true
     mini.Visible = false
 end)
-
-
