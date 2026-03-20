@@ -16,8 +16,8 @@ local function stringToCFrame(str)
 end
 
 -- Positions
-local pos2 = stringToCFrame("260.00, 651.50, 250.00, 1,0,0, 0,1,0, 0,0,1")
-local pos3 = stringToCFrame("270.00, 651.50, 260.00, 1,0,0, 0,1,0, 0,0,1")
+local pos2 = stringToCFrame("452.928772, 647.707581, -88.8344269, 0.508249521, 1.60491282e-08, 0.861209869, 4.76466653e-08, 1, -4.67546002e-08, -0.861209869, 6.47967795e-08, 0.508249521")
+local pos3 = stringToCFrame("-189.413116, 649.841431, 570.376709, -0.978912592, -1.51165889e-08, 0.204279631, -2.91158173e-08, 1, -6.5524155e-08, -0.204279631, -7.00901879e-08, -0.978912592")
 
 -- GUI
 local gui = Instance.new("ScreenGui", game.CoreGui)
