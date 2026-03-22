@@ -18,6 +18,7 @@ end
 -- 📦 EGG LIST
 local eggs = {
     ["Void"] = stringToCFrame("109.40937, 1178.62415, 218.645935, 0.835030437, -3.80566547e-08, -0.550203741, -2.871659e-08, 1, -1.1275074e-07, 0.550203741, 1.09950278e-07, 0.835030437"),
+    ["Heaven"] = stringToCFrame("54.2615204, 884.353699, 328.686371, 0.667307198, 4.28766036e-08, -0.744782627, -4.62222047e-08, 1, 1.61553135e-08, 0.744782627, 2.36449367e-08, 0.667307198"),
 }
 
 -- 📍 MACHINES
@@ -79,7 +80,7 @@ textbox.Size = UDim2.new(1, -20, 0, 30)
 textbox.Position = UDim2.new(0, 10, 0, 40)
 textbox.PlaceholderText = "Enter Egg Name"
 textbox.BackgroundColor3 = Color3.fromRGB(60,60,60)
-textbox.Text = _G.CONFIG or ""
+textbox.Text = _G.CONFIG.AUTOEGG or ""
 textbox.TextColor3 = Color3.new(1,1,1)
 
 local function createButton(text, yPos)
@@ -146,7 +147,7 @@ makeDraggable(mini, mini)
 
 -- LOOP STATES
 local loops = {
-    pos1 = false,
+    pos1 = (_G.CONFIG.AUTOEGG ~= "" and true) or false,
     pos2 = false,
     pos3 = false
 }
