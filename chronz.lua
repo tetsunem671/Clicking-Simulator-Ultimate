@@ -3,6 +3,7 @@ local UserInputService = game:GetService("UserInputService")
 
 local player = Players.LocalPlayer
 
+print(_G)
 print(_G.CONFIG)
 
 -- Convert string → CFrame
