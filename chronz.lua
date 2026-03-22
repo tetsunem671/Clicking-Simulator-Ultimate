@@ -3,6 +3,8 @@ local UserInputService = game:GetService("UserInputService")
 
 local player = Players.LocalPlayer
 
+print(_G.CONFIG)
+
 -- Convert string → CFrame
 local function stringToCFrame(str)
     local numbers = {}
@@ -148,7 +150,7 @@ makeDraggable(mini, mini)
 
 -- LOOP STATES
 local loops = {
-    pos1 = (_G.CONFIG.AUTOEGG ~= "" and true) or false,
+    pos1 = ((_G.CONFIG.AUTOEGG or "") ~= "" and true) or false,
     pos2 = false,
     pos3 = false
 }
