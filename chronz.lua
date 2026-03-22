@@ -158,15 +158,19 @@ local loops = {
 
 local MAX_DISTANCE = 25
 
--- 🔁 AUTO HATCH
-btn1.MouseButton1Click:Connect(function()
-    loops.pos1 = not loops.pos1
+local function autoTPToEgg()
     btn1.BackgroundColor3 = loops.pos1 and Color3.fromRGB(0,200,0) or Color3.fromRGB(70,70,70)
 
     if loops.pos1 then
         task.spawn(function()
             while loops.pos1 do
+                if not loops.pos1 then
+                        break
+                    end
                 task.wait(1)
+                if not loops.pos1 then
+                        break
+                    end
 
                 local char = player.Character
                 local selectedCF = eggs[textbox.Text]
@@ -197,6 +201,13 @@ btn1.MouseButton1Click:Connect(function()
             end
         end)
     end
+end
+autoTPToEgg()
+
+-- 🔁 AUTO HATCH
+btn1.MouseButton1Click:Connect(function()
+    loops.pos1 = not loops.pos1
+    autoTPToEgg()
 end)
 
 -- 🟡 GOLDEN MACHINE
