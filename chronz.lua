@@ -3,8 +3,8 @@ local UserInputService = game:GetService("UserInputService")
 
 local player = Players.LocalPlayer
 
-print(_G)
-print(_G.CONFIG)
+local Config = _G.CONFIG
+local AUTOEGG = Config.AUTOEGG
 
 -- Convert string → CFrame
 local function stringToCFrame(str)
@@ -84,7 +84,7 @@ textbox.Size = UDim2.new(1, -20, 0, 30)
 textbox.Position = UDim2.new(0, 10, 0, 40)
 textbox.PlaceholderText = "Enter Egg Name"
 textbox.BackgroundColor3 = Color3.fromRGB(60,60,60)
-textbox.Text = _G.CONFIG.AUTOEGG or ""
+textbox.Text = AUTOEGG or ""
 textbox.TextColor3 = Color3.new(1,1,1)
 
 local function createButton(text, yPos)
@@ -151,7 +151,7 @@ makeDraggable(mini, mini)
 
 -- LOOP STATES
 local loops = {
-    pos1 = ((_G.CONFIG.AUTOEGG or "") ~= "" and true) or false,
+    pos1 = AUTOEGG ~= "" and true or false,
     pos2 = false,
     pos3 = false
 }
@@ -202,7 +202,6 @@ local function autoTPToEgg()
         end)
     end
 end
-autoTPToEgg()
 
 -- 🔁 AUTO HATCH
 btn1.MouseButton1Click:Connect(function()
@@ -272,3 +271,6 @@ mini.MouseButton1Click:Connect(function()
     main.Visible = true
     mini.Visible = false
 end)
+
+task.wait(0.5)
+autoTPToEgg()
